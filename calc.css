@@ -1,0 +1,37 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+main {
+    width: 400px;
+    height: 500px;
+    display: flex;
+    flex-direction: column;
+}
+
+.display {
+    width: 400px;
+    height: 150px;
+    background-color: gray;
+}
+.buttons {
+    width: 400px;
+    height: 350px;
+    background-color: black;
+    display: flex;
+    flex-wrap: wrap;
+
+    button {
+        width: 100px;
+        font-size: 25px;
+    }
+}
+
