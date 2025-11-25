@@ -15,24 +15,45 @@ let firstNum = undefined;
 let operator = undefined;
 let secondNum = undefined;
 let displayNum = '';
+let secondNumActive = false;
 
 function operate (oper, num1, num2) {
 
     switch (oper) {
         case '+':
-            add(num1, num2);
-            break;
+            return add(num1, num2);
         case '-':
-            subtract(num1, num2);
-            break;
+            return subtract(num1, num2);
         case '*':
-            multiply(num1, num2);
-            break;
+            return multiply(num1, num2);
         case '÷':
-            divide(num1, num2);
-            break;
+            return divide(num1, num2);
     }
 }
+
+function handleDigit (chosenDigit) {
+    displayNum += chosenDigit
+    display.textContent = displayNum;
+}
+
+function handleOperator (chosenOperator) {
+    firstNum = Number(displayNum);
+    operator = chosenOperator;
+    secondNumActive = true;
+    displayNum = '';
+}
+
+function handleEquals () {
+    secondNum = Number(displayNum);
+    let result = operate(operator, firstNum, secondNum);
+    displayNum = result;
+    display.textContent = result;
+}
+
+function handleClear () {
+
+}
+
 
 
 const buttons = document.querySelector(".buttons");
@@ -51,22 +72,22 @@ buttons.addEventListener('click', (e) => {
         case '7':
         case '8':
         case '9':
-            displayNum += e.target.innerText
-            display.textContent = displayNum;
+            handleDigit(e.target.innerText);
             break;
         
-
         case '+':
-            oper(e.target.innerText,)
-            break;
         case '-':
-            console.log(add(6, 5));
-            break;
         case '*':
-            console.log(add(7, 5));
-            break;
         case '÷':
-            console.log(add(8, 5));
+        case '%':
+            handleOperator(e.target.innerText);
             break;
+
+        case '=':
+            handleEquals();
+
+        case 'CE':
+        case 'C':
+            handleClear();
     }
 });
