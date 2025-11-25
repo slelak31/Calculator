@@ -37,10 +37,15 @@ function handleDigit (chosenDigit) {
 }
 
 function handleOperator (chosenOperator) {
+    if(!secondNumActive) {
     firstNum = Number(displayNum);
     operator = chosenOperator;
     secondNumActive = true;
     displayNum = '';
+    }
+    else {
+        handleEquals();
+    }
 }
 
 function handleEquals () {
@@ -51,7 +56,12 @@ function handleEquals () {
 }
 
 function handleClear () {
-
+    secondNumActive = false;
+    displayNum = '';
+    firstNum = undefined;
+    operator = undefined;
+    secondNum = undefined;
+    display.textContent = '0';
 }
 
 
