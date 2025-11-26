@@ -8,7 +8,13 @@ function multiply (a, b) {
     return a * b;
 }
 function divide (a, b) {
+    if(b === 0) {
+    impossibleMath = true;
+    return "Cannot divide by zero"
+    }
+    else {
     return a / b;
+    }
 }
 
 let firstNum = undefined;
@@ -16,6 +22,7 @@ let operator = undefined;
 let secondNum = undefined;
 let displayNum = '';
 let secondNumActive = false;
+let impossibleMath = false;
 
 function operate (oper, num1, num2) {
 
@@ -32,6 +39,9 @@ function operate (oper, num1, num2) {
 }
 
 function handleDigit (chosenDigit) {
+    if(displayNum === 0) {
+        displayNum = '';
+    }
     displayNum += chosenDigit
     display.textContent = displayNum;
 }
@@ -44,17 +54,48 @@ function handleOperator (chosenOperator) {
     displayNum = '';
     }
     else {
-        handleEquals();
+        secondNum = Number(displayNum);
+        secondNumActive = false;
+        handleSuccessiveOperatorEquals();
+        operator = chosenOperator;
+        secondNumActive = true;
+        displayNum = '';
     }
 }
 
 function handleEquals () {
+    if(displayNum === '') { /* handles +=, -= etc */
+        secondNum = firstNum;
+    }
+    else {
     secondNum = Number(displayNum);
+    }
+    let result = operate(operator, firstNum, secondNum);
+    if(!impossibleMath) {
+    displayNum = result;
+    display.textContent = result;
+    firstNum = result;
+    secondNumActive = false;
+    }
+    else {
+    display.textContent = result;
+    displayNum = '';
+    firstNum = undefined;
+    operator = undefined;
+    secondNum = undefined;
+    /*add functionality to make operator class buttons disabled*/
+    }
+}
+
+function handleSuccessiveOperatorEquals () {
     let result = operate(operator, firstNum, secondNum);
     displayNum = result;
     display.textContent = result;
+    firstNum = Number(displayNum);
+    secondNumActive = false;
 }
 
+/*add different func for C vs CE*/
 function handleClear () {
     secondNumActive = false;
     displayNum = '';
@@ -95,9 +136,11 @@ buttons.addEventListener('click', (e) => {
 
         case '=':
             handleEquals();
+            break;
 
         case 'CE':
         case 'C':
             handleClear();
+            break;
     }
 });
