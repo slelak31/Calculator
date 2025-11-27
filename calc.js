@@ -23,6 +23,10 @@ let secondNum = undefined;
 let displayNum = '';
 let secondNumActive = false;
 let impossibleMath = false;
+let currentDisplayFontSize = 30;
+
+const buttons = document.querySelector(".buttons");
+const display = document.querySelector(".digits");
 
 function operate (oper, num1, num2) {
 
@@ -42,10 +46,15 @@ function handleDigit (chosenDigit) {
     if(displayNum === 0) {
         displayNum = '';
     }
+    if(display.scrollWidth >= 375) { /* add a min size and also add a max digit count (prob 16)*/
+        currentDisplayFontSize -= 5;
+        display.style.fontSize = `${currentDisplayFontSize}px`;
+    }
     displayNum += chosenDigit
     display.textContent = displayNum;
 }
 
+/*FIX BUG WHERE SELECTING OPERATOR TWICE IN A ROW WILL BREAK THINGS (IT MAKES 0 THE SECOND NUM, SO ADD AND MINUS SEEM FINE BUT * AND / ARE BROKEN)*/
 function handleOperator (chosenOperator) {
     if(!secondNumActive) {
     firstNum = Number(displayNum);
@@ -104,11 +113,6 @@ function handleClear () {
     secondNum = undefined;
     display.textContent = '0';
 }
-
-
-
-const buttons = document.querySelector(".buttons");
-const display = document.querySelector(".digits");
 
 buttons.addEventListener('click', (e) => {
 
