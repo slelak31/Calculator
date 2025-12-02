@@ -23,7 +23,7 @@ let secondNum = undefined;
 let displayNum = '';
 let secondNumActive = false;
 let impossibleMath = false;
-let currentDisplayFontSize = 30;
+let currentDisplayFontSize = 50;
 
 const buttons = document.querySelector(".buttons");
 const display = document.querySelector(".digits");
@@ -46,9 +46,12 @@ function handleDigit (chosenDigit) {
     if(displayNum === 0) {
         displayNum = '';
     }
-    if(display.scrollWidth >= 375) { /* add a min size and also add a max digit count (prob 16)*/
+    if(display.scrollWidth >= 375 && currentDisplayFontSize > 20) { /* add a min size and also add a max digit count (prob 16)*/
         currentDisplayFontSize -= 5;
         display.style.fontSize = `${currentDisplayFontSize}px`;
+    }
+    if(displayNum.length >= 16) {
+        return;
     }
     displayNum += chosenDigit
     display.textContent = displayNum;
@@ -111,7 +114,13 @@ function handleClear () {
     firstNum = undefined;
     operator = undefined;
     secondNum = undefined;
+    currentDisplayFontSize = 50;
     display.textContent = '0';
+    display.style.fontSize = currentDisplayFontSize;
+}
+
+function handlebackspace () {
+    
 }
 
 buttons.addEventListener('click', (e) => {
@@ -145,6 +154,10 @@ buttons.addEventListener('click', (e) => {
         case 'CE':
         case 'C':
             handleClear();
+            break;
+
+        case 'backspc':
+            handlebackspace();
             break;
     }
 });
