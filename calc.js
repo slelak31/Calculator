@@ -10,7 +10,7 @@ function multiply (a, b) {
 function divide (a, b) {
     if(b === 0) {
     impossibleMath = true;
-    return "Cannot divide by zero"
+    return "Cannot divide by 0"
     }
     else {
     return a / b;
@@ -27,6 +27,7 @@ let currentDisplayFontSize = 50;
 
 const buttons = document.querySelector(".buttons");
 const display = document.querySelector(".digits");
+const oper = document.querySelectorAll(".operator");
 
 function operate (oper, num1, num2) {
 
@@ -46,15 +47,11 @@ function handleDigit (chosenDigit) {
     if(displayNum === 0) {
         displayNum = '';
     }
-    if(display.scrollWidth >= 375 && currentDisplayFontSize > 20) { /* add a min size and also add a max digit count (prob 16)*/
-        currentDisplayFontSize -= 5;
-        display.style.fontSize = `${currentDisplayFontSize}px`;
-    }
     if(displayNum.length >= 16) {
         return;
     }
     displayNum += chosenDigit
-    display.textContent = displayNum;
+    drawDisplay(displayNum);
 }
 
 /*FIX BUG WHERE SELECTING OPERATOR TWICE IN A ROW WILL BREAK THINGS (IT MAKES 0 THE SECOND NUM, SO ADD AND MINUS SEEM FINE BUT * AND / ARE BROKEN)*/
@@ -85,12 +82,12 @@ function handleEquals () {
     let result = operate(operator, firstNum, secondNum);
     if(!impossibleMath) {
     displayNum = result;
-    display.textContent = result;
+    drawDisplay(result);
     firstNum = result;
     secondNumActive = false;
     }
     else {
-    display.textContent = result;
+    drawDisplay(result);
     displayNum = '';
     firstNum = undefined;
     operator = undefined;
@@ -102,7 +99,7 @@ function handleEquals () {
 function handleSuccessiveOperatorEquals () {
     let result = operate(operator, firstNum, secondNum);
     displayNum = result;
-    display.textContent = result;
+    result;
     firstNum = Number(displayNum);
     secondNumActive = false;
 }
@@ -114,13 +111,61 @@ function handleClear () {
     firstNum = undefined;
     operator = undefined;
     secondNum = undefined;
+    impossibleMath = false;
     currentDisplayFontSize = 50;
     display.textContent = '0';
     display.style.fontSize = currentDisplayFontSize;
 }
 
 function handlebackspace () {
-    
+    displayNum = displayNum.slice(0, -1);
+    drawDisplay(displayNum) || '0';
+}
+
+/*FIX re-enable buttons after / by 0 message*/
+function drawDisplay (displayNum) {
+    if(!impossibleMath) {
+    let formattedDisplayNum = displayNum.toString();
+    let tempArray = [];
+    let negSign = '';
+    let decimalNums = '';
+    if(formattedDisplayNum.substring(0, 1) == '-') { //remove negative sign
+        formattedDisplayNum = formattedDisplayNum.substring(1);
+        negSign = '-';
+    }
+
+    if(formattedDisplayNum.includes(".")) {
+        const decimalSplitarray = formattedDisplayNum.split(".");
+        formattedDisplayNum = decimalSplitarray[0];
+        decimalNums = '.' + decimalSplitarray[1];
+    }
+
+    while (formattedDisplayNum.length >= 3) {
+        tempArray.push(formattedDisplayNum.substring(formattedDisplayNum.length - 3));
+       formattedDisplayNum = formattedDisplayNum.slice(0, formattedDisplayNum.length - 3);
+    }
+    if(formattedDisplayNum.length >= 1) {
+    tempArray.push(formattedDisplayNum);
+    }
+    tempArray.reverse();
+    display.textContent = (negSign + tempArray.join(',') + decimalNums);
+    }
+    else {
+        display.textContent = displayNum;
+        oper.forEach(button => {
+            button.disabled = true;
+        });
+        
+    }   
+    //round result after operation to less than 16 digits
+    if(display.scrollWidth > 375) {
+        currentDisplayFontSize -= 3;
+        display.style.fontSize = `${currentDisplayFontSize}px`;
+    }
+    else if (display.scrollWidth < 350 && currentDisplayFontSize < 50) {
+        currentDisplayFontSize += 3;
+        display.style.fontSize = `${currentDisplayFontSize}px`;
+    }
 }
 
 buttons.addEventListener('click', (e) => {
